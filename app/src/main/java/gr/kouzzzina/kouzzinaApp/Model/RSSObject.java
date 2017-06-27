@@ -46,4 +46,13 @@ public class RSSObject
     public void setItems(List<Item> items) {
         this.items = items;
     }
+
+    @Override
+    public String toString() {
+        return "RSSObject{" +
+                "status='" + status + '\'' +
+                ", feed=" + feed +
+                ", items=" + items +
+                '}';
+    }
 }

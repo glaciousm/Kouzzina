@@ -11,15 +11,15 @@ public class Feed
     public String link;
     public String author;
     public String description;
-    public String image;
+    public String summary;
 
-    public Feed(String url, String title, String link, String author, String description, String image) {
+    public Feed(String url, String title, String link, String author, String description, String summary) {
         this.url = url;
         this.title = title;
         this.link = link;
         this.author = author;
         this.description = description;
-        this.image = image;
+        this.summary = summary;
     }
 
     public String getUrl() {
@@ -62,11 +62,23 @@ public class Feed
         this.description = description;
     }
 
-    public String getImage() {
-        return image;
+    public String getSummary() {
+        return summary;
     }
 
-    public void setImage(String image) {
-        this.image = image;
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
+    @Override
+    public String toString() {
+        return "Feed{" +
+                "url='" + url + '\'' +
+                ", title='" + title + '\'' +
+                ", link='" + link + '\'' +
+                ", author='" + author + '\'' +
+                ", description='" + description + '\'' +
+                ", summary='" + summary + '\'' +
+                '}';
     }
 }

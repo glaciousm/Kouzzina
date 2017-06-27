@@ -1,6 +1,8 @@
 package gr.kouzzzina.kouzzinaApp.Model;
 
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import gr.kouzzzina.kouzzinaApp.Common.Utils;
 
@@ -18,10 +20,11 @@ public class Item
     public String thumbnail;
     public String description;
     public String content;
+    public String summary;
     public Object enclosure;
     public List<String> categories;
 
-    public Item(String title, String pubDate, String link, String guid, String author, String thumbnail, String description, String content, Object enclosure, List<String> categories) {
+    public Item(String title, String pubDate, String link, String guid, String author, String thumbnail, String description, String content, String summary, Object enclosure, List<String> categories) {
         this.title = title;
         this.pubDate = pubDate;
         this.link = link;
@@ -31,6 +34,7 @@ public class Item
         this.description = description;
         this.content = content;
         this.enclosure = enclosure;
+        this.summary = summary;
         this.categories = categories;
     }
 
@@ -98,6 +102,27 @@ public class Item
         this.content = content;
     }
 
+    public String getSummary() {
+
+        String regex = "http?:/(?:/[^/]+)+\\.(?:jpg|gif|png)";;
+        Pattern p = Pattern.compile(regex);
+        Matcher m = p.matcher(content);
+        String urlStr ="test";
+
+        while(m.find()) {
+            urlStr = m.group();
+            if (urlStr.startsWith("(") && urlStr.endsWith(")"))
+            {
+                urlStr = urlStr.substring(1, urlStr.length() - 1);
+            }}
+
+        return urlStr;
+    }
+
+    public void setSummary(String summary) {
+        this.summary = summary;
+    }
+
     public Object getEnclosure() {
         return enclosure;
     }
@@ -112,5 +137,22 @@ public class Item
 
     public void setCategories(List<String> categories) {
         this.categories = categories;
+    }
+
+    @Override
+    public String toString() {
+        return "Item{" +
+                "title='" + title + '\'' +
+                ", pubDate='" + pubDate + '\'' +
+                ", link='" + link + '\'' +
+                ", guid='" + guid + '\'' +
+                ", author='" + author + '\'' +
+                ", thumbnail='" + thumbnail + '\'' +
+                ", description='" + description + '\'' +
+                ", content='" + content + '\'' +
+                ", summary='" + summary + '\'' +
+                ", enclosure=" + enclosure +
+                ", categories=" + categories +
+                '}';
     }
 }

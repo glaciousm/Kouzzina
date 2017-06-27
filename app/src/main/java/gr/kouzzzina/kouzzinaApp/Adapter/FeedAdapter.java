@@ -2,13 +2,24 @@ package gr.kouzzzina.kouzzinaApp.Adapter;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
+import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URL;
+
+import gr.kouzzzina.kouzzinaApp.Common.Utils;
 import gr.kouzzzina.kouzzinaApp.Interface.ItemClickListener;
 import gr.kouzzzina.kouzzinaApp.Model.RSSObject;
 import gr.kouzzzina.kouzzinaApp.R;
@@ -20,8 +31,10 @@ import gr.kouzzzina.kouzzinaApp.R;
 class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener,View.OnLongClickListener
 {
 
-    public TextView txtTitle,txtPubDate,txtContent;
+    public TextView txtTitle,txtPubDate,txtContent,txtSummary;
+    public ImageView imgContent;
     private ItemClickListener itemClickListener;
+
 
     public FeedViewHolder(View itemView) {
         super(itemView);
@@ -29,6 +42,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
         txtTitle = (TextView)itemView.findViewById(R.id.txtTitle);
         txtPubDate = (TextView)itemView.findViewById(R.id.txtPubDate);
         txtContent = (TextView)itemView.findViewById(R.id.txtContent);
+        imgContent = (ImageView) itemView.findViewById(R.id.imgContent);
 
         //Set Event
         itemView.setOnClickListener(this);
@@ -54,6 +68,7 @@ class FeedViewHolder extends RecyclerView.ViewHolder implements View.OnClickList
 }
 
 public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
+    private URL url;
 
     private RSSObject rssObject;
     private Context mContext;
@@ -74,9 +89,12 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     @Override
     public void onBindViewHolder(FeedViewHolder holder, int position) {
 
+        new DownLoadImageTask(holder.imgContent).execute(rssObject.getItems().get(position).getSummary());
+
         holder.txtTitle.setText(rssObject.getItems().get(position).getTitle());
         holder.txtPubDate.setText(rssObject.getItems().get(position).getPubDate());
         holder.txtContent.setText(rssObject.getItems().get(position).getContent());
+        //holder.imgContent.setImageResource(););
 
         holder.setItemClickListener(new ItemClickListener() {
             @Override
@@ -95,4 +113,41 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
     public int getItemCount() {
         return rssObject.items.size();
     }
+
+    private class DownLoadImageTask extends AsyncTask<String,Void,Bitmap>{
+        ImageView imageView;
+
+        public DownLoadImageTask(ImageView imageView){
+            this.imageView = imageView;
+        }
+
+        /*
+            doInBackground(Params... params)
+                Override this method to perform a computation on a background thread.
+         */
+        protected Bitmap doInBackground(String...urls){
+            String urlOfImage = urls[0];
+            Bitmap logo = null;
+            try{
+                InputStream is = new URL(urlOfImage).openStream();
+                /*
+                    decodeStream(InputStream is)
+                        Decode an input stream into a bitmap.
+                 */
+                logo = BitmapFactory.decodeStream(is);
+            }catch(Exception e){ // Catch the download exception
+                e.printStackTrace();
+            }
+            return logo;
+        }
+
+        /*
+            onPostExecute(Result result)
+                Runs on the UI thread after doInBackground(Params...).
+         */
+        protected void onPostExecute(Bitmap result){
+            imageView.setImageBitmap(result);
+        }
+    }
+
 }
