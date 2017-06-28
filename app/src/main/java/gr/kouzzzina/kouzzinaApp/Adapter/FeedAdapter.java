@@ -128,6 +128,9 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
         protected Bitmap doInBackground(String...urls){
             String urlOfImage = urls[0];
             Bitmap logo = null;
+
+            final int THUMBNAIL_SIZE = 64;
+
             try{
                 InputStream is = new URL(urlOfImage).openStream();
                 /*
@@ -135,6 +138,8 @@ public class FeedAdapter extends RecyclerView.Adapter<FeedViewHolder> {
                         Decode an input stream into a bitmap.
                  */
                 logo = BitmapFactory.decodeStream(is);
+                logo = Bitmap.createScaledBitmap(logo, THUMBNAIL_SIZE, THUMBNAIL_SIZE, false);
+
             }catch(Exception e){ // Catch the download exception
                 e.printStackTrace();
             }
